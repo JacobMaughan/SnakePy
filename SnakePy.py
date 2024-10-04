@@ -38,12 +38,14 @@ class Game:
 		self.last_increased_score = 0
 
 	def update(self):
+		# Update counter that controls how fast the game runs
 		self.counter += self.dt
 		if self.counter >= 1 / self.speed:
 			self.counter = 0
 			self.handle_events()
 
 			if self.game_state == 0:
+				# Check to make sure player has chosen direction to move before updating snake position (Important for multiple 'snake  bodies' at start of game)
 				if self.vel_x != 0 or self.vel_y != 0:
 					self.move_snake()
 				self.handle_collisions()
@@ -84,13 +86,16 @@ class Game:
 			self.dt = self.clock.tick(60) / 1000
 
 	def handle_collisions(self):
+		# Check if the snake has hit itself
 		for i in range(len(self.snake), 1, -1):
 			if self.snake[0][0] == self.snake[i - 1][0] and self.snake[0][1] == self.snake[i - 1][1]:
 				self.updated_highscore = False
 				self.game_state = 1
+		# Check if the snake has hit the edge of the play area
 		if self.snake[0][0] < 0 or self.snake[0][0] == 600 or self.snake[0][1] < 0 or self.snake[0][1] == 600:
 			self.updated_highscore = False
 			self.game_state = 1
+		# Check if the snake has hit an apple
 		if self.snake[0][0] == self.apple[0] and self.snake[0][1] == self.apple[1]:
 			self.add_snake()
 			self.add_apple()
@@ -126,11 +131,27 @@ class Game:
 						self.new_game()
 
 	def move_snake(self):
+		# Iterates throught the snake array backwards setting each 'body part' position to the position of the 'body part' one further instance back, to emulate the snake movement
 		for i in range(len(self.snake), 1, -1):
 			self.snake[i - 1][0] = self.snake[i - 2][0]
 			self.snake[i - 1][1] = self.snake[i - 2][1]
+		# Moves the first instance of the snake in the direction the player has chosen
 		self.snake[0][0] += self.vel_x * 20
 		self.snake[0][1] += self.vel_y * 20
+
+	def add_apple(self):
+		self.apple = [ randint(0, 29) * 20, randint(0, 29) * 20 ]
+
+	def add_snake(self):
+		# Add a 'snake body' to the position of the last 'snake body'
+		if self.snake:
+			self.snake.append([ self.snake[len(self.snake) - 1][0], self.snake[len(self.snake) - 1][1] ])
+
+	def add_score(self):
+		self.score += 1
+		if self.score == self.last_increased_score + 10:
+			self.last_increased_score = self.score
+			self.speed += 1
 
 	def new_game(self):
 		self.snake = [[15 * 20, 15 * 20]]
@@ -140,19 +161,6 @@ class Game:
 		self.add_apple()
 		self.score = 0
 		self.last_increased_score = 0
-
-	def add_apple(self):
-		self.apple = [ randint(0, 29) * 20, randint(0, 29) * 20 ]
-
-	def add_snake(self):
-		if self.snake:
-			self.snake.append([ self.snake[len(self.snake) - 1][0], self.snake[len(self.snake) - 1][1] ])
-
-	def add_score(self):
-		self.score += 1
-		if self.score == self.last_increased_score + 10:
-			self.last_increased_score = self.score
-			self.speed += 1
 
 	def update_highscore(self):
 		if not self.updated_highscore:
