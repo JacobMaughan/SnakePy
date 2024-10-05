@@ -15,6 +15,7 @@ class Game:
 		self.clock = pygame.time.Clock()
 		self.dt = 0
 		self.counter = 0
+		self.can_move = False
 		self.game_state = 0
 
 		# Load or Create highscore file and initialize highscore variables
@@ -38,11 +39,14 @@ class Game:
 		self.last_increased_score = 0
 
 	def update(self):
+		# Get any event calls and process them
+		self.handle_events()
+
 		# Update counter that controls how fast the game runs
 		self.counter += self.dt
 		if self.counter >= 1 / self.speed:
+			self.can_move = True
 			self.counter = 0
-			self.handle_events()
 
 			if self.game_state == 0:
 				# Check to make sure player has chosen direction to move before updating snake position (Important for multiple 'snake  bodies' at start of game)
@@ -108,23 +112,27 @@ class Game:
 				pygame.quit()
 				sys_exit()
 			if event.type == pygame.KEYDOWN:
-				if self.game_state == 0:
+				if self.game_state == 0 and self.can_move:
 					if event.key == pygame.key.key_code('w'):
 						if self.vel_y == 0:
 							self.vel_y = -1
 							self.vel_x = 0
+							self.can_move = False
 					elif event.key == pygame.key.key_code('s'):
 						if self.vel_y == 0:
 							self.vel_y = 1
 							self.vel_x = 0
+							self.can_move = False
 					elif event.key == pygame.key.key_code('a'):
 						if self.vel_x == 0:
 							self.vel_x = -1
 							self.vel_y = 0
+							self.can_move = False
 					elif event.key == pygame.key.key_code('d'):
 						if self.vel_x == 0:
 							self.vel_x = 1
 							self.vel_y = 0
+							self.can_move = False
 				elif self.game_state == 1:
 					if event.key == pygame.key.key_code('space'):
 						self.game_state = 0
