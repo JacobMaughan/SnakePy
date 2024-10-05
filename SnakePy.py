@@ -113,22 +113,22 @@ class Game:
 				sys_exit()
 			if event.type == pygame.KEYDOWN:
 				if self.game_state == 0 and self.can_move:
-					if event.key == pygame.key.key_code('w'):
+					if event.key == pygame.key.key_code('w') or event.key == pygame.key.key_code('up'):
 						if self.vel_y == 0:
 							self.vel_y = -1
 							self.vel_x = 0
 							self.can_move = False
-					elif event.key == pygame.key.key_code('s'):
+					elif event.key == pygame.key.key_code('s') or event.key == pygame.key.key_code('down'):
 						if self.vel_y == 0:
 							self.vel_y = 1
 							self.vel_x = 0
 							self.can_move = False
-					elif event.key == pygame.key.key_code('a'):
+					elif event.key == pygame.key.key_code('a') or event.key == pygame.key.key_code('left'):
 						if self.vel_x == 0:
 							self.vel_x = -1
 							self.vel_y = 0
 							self.can_move = False
-					elif event.key == pygame.key.key_code('d'):
+					elif event.key == pygame.key.key_code('d') or event.key == pygame.key.key_code('right'):
 						if self.vel_x == 0:
 							self.vel_x = 1
 							self.vel_y = 0
