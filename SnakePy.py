@@ -148,7 +148,15 @@ class Game:
 		self.snake[0][1] += self.vel_y * 20
 
 	def add_apple(self):
-		self.apple = [ randint(0, 29) * 20, randint(0, 29) * 20 ]
+		good_apple = False
+		while not good_apple:
+			good_apple = True
+			self.apple = [ randint(0, 29) * 20, randint(0, 29) * 20 ]
+			for body_part in self.snake:
+				if body_part[0] == self.apple[0] and body_part[1] == self.apple[1]:
+					good_apple = False
+
+
 
 	def add_snake(self):
 		# Add a 'snake body' to the position of the last 'snake body'
